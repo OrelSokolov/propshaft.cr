@@ -45,15 +45,19 @@
   Accept-Encoding. `.br` — внешний CLI `brotli`; при отсутствии
   молча пропускается. Гем ничего подобного не пишет.
 - **`rails asset:precompile` грузит окружение приложения** — CLI
-  `crails assets:*` читает файловую систему (app/assets/* +
-  vendor/assets/* + vendor/javascript) и env `CRAILS_ASSETS_PATHS`;
-  кастомный `config.assets.paths` приложения CLI не видит (в рантайме
-  приложения — работает, `CRails.application.assets`).
+  `crails assets:*` в приложении (src/app.cr + config/application.cr)
+  собирает `bin/app` и выполняет таску в окружении приложения:
+  кастомный `config.assets.paths` виден (`Application#cmd_assets` →
+  `CRails::AssetsCommands`). Bare-FS режим (исходников приложения
+  нет, напр. Docker-стадия): load path — файловая система
+  (app/assets/* + vendor/assets/* + vendor/javascript) и env
+  `CRAILS_ASSETS_PATHS`; env работает в обоих режимах.
 - **content_type-таблица минимальна** (css/js); всё прочее —
   pass-through копия. Отдачу делает static.cr со своей MIME-таблицей.
-- **Regex на бинарном контенте**: PCRE2 бросает UTF-8 error —
-  referenced_by пропускает invalid-UTF8 ассеты (url в бинарнике не
-  резолвится; в ruby — резолвился бы).
+- **Regex на бинарном контенте** — закрыто: `Asset#scannable_content`
+  (invalid UTF-8 байты выбрасываются, ASCII-паттерны матчатся как в
+  ruby ASCII-8BIT); url в бинарнике резолвится (spec
+  `binary_scan_spec.cr`).
 - **parallel процессинга нет** — однопоточно (объём мал).
 - **file_watcher/cache_sweeper нет** — dev-ревалидация через
   static.cr (mtime-кэш), не через LoadPath-кэш.

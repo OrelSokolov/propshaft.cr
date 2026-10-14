@@ -1,0 +1,16 @@
+@import "other.css";
+.body {
+  background: url("bg.png");
+  icon: url('../images/i.png');
+  plain: url(noquote.png);
+  dot: url("./bg.png");
+  root: url(/absolute-root.png);
+  data: url("data:image/png;base64,AAA");
+  hash: url("#frag");
+  remote: url("https://x.example/a.png");
+  proto: url("//cdn.example/b.png");
+  query: url("bg.png?v=123");
+  query_hash: url("bg.png#anchor");
+  missing: url("missing.png");
+}
+//# sourceMappingURL=source.css.map
